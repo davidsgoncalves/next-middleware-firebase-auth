@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Rotas que não precisam de autenticação, rota root também está incluída implicitamente
 const AUTH_FREE_ROUTES = ["/api"];
+// Rotas que não são acessadas se o usuário estiver autenticado
 const AUTH_REDIRECT_ROUTES = ["/login"];
+// arquivos públicos ex: /favicon.ico, /robots.txt, /manifest.json
 const PUBLIC_FILE = /\.(.*)$/;
+// Rota que o login redirecionará
+const POST_AUTH_ROUTE = "/workspaces"
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,7 +21,7 @@ export async function middleware(request: NextRequest) {
     const token = request.cookies.get("token")?.value;
 
     if (token) {
-      return NextResponse.redirect(new URL("/workspaces", request.url));
+      return NextResponse.redirect(new URL(POST_AUTH_ROUTE, request.url));
     }
   } else {
     const token = request.cookies.get("token")?.value;
